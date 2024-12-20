@@ -1,0 +1,104 @@
+# Clear the environment
+rm(list = ls())
+
+# Set working directory
+# setwd("/home/jelius/Documents/magoti/EASTC_BDTS_23_00437/PRACTICAL_ASSIGNMENT/scripts")
+
+# Load necessary libraries
+library(readxl)   # For reading Excel files
+library(epitools) # For odds ratio and relative risk
+library(dplyr)    # For data cleaning and manipulation
+
+# Step 1: Load the data
+data <- read_excel("Births.xlsx", sheet = "Births")
+
+# Step 2: Data Cleaning and Processing 
+    data <- data %>%
+      mutate(
+        `Mother's hypertension status` = as.factor(`Mother's hypetension status`),
+        `Birth Status` = as.factor(`Birth Status`),
+       
+  )
+
+# Choosen variables and why?
+# Mother's hypertension status: Predictor variable (hypertension may influence birth outcomes)
+# Birth Status: Outcome variable (normal or abnormal)
+# These variables are chosen to analyze the relationship between maternal health and birth outcomes.
+
+# Step 3: Chi-square test for independence
+# Variables: Mother's hypertension status and Birth Status
+chi_sq_table <- table(data$`Mother's hypertension status`, data$`Birth Status`)
+chi_square_result <- chisq.test(chi_sq_table)
+
+# Output Chi-Square results
+cat("Chi-square Test for Independence:\n")
+print(chi_square_result)
+
+# Interpretation of Chi-Square
+if (chi_square_result$p.value < 0.05) {
+  cat("There is a significant association between Mother's Hypertension Status and Birth Status (p < 0.05).\n")
+} else {
+  cat("There is no significant association between Mother's Hypertension Status and Birth Status (p >= 0.05).\n")
+}
+
+# Step 4: Odds Ratio
+# Variables: Mother's hypertension status and Birth Status
+odds_ratio_result <- oddsratio(chi_sq_table)
+
+# Output Odds Ratio results
+cat("\nOdds Ratio:\n")
+print(odds_ratio_result$measure)
+
+# Interpretation of Odds Ratio
+if (odds_ratio_result$measure[2, "estimate"] > 1) {
+  cat("An Odds Ratio > 1 suggests that hypertensive mothers are more likely to have abnormal birth outcomes.\n")
+} else {
+  cat("An Odds Ratio < 1 suggests that hypertensive mothers are less likely to have abnormal birth outcomes.\n")
+}
+
+# Step 5: Relative Risk
+# Variables: Mother's hypertension status and Birth Status
+relative_risk_result <- riskratio(chi_sq_table)
+
+# Output Relative Risk results
+cat("\nRelative Risk:\n")
+print(relative_risk_result$measure)
+
+# Interpretation of Relative Risk
+if (relative_risk_result$measure[2, "estimate"] > 1) {
+  cat("A Relative Risk > 1 indicates a higher risk of abnormal birth outcomes for hypertensive mothers.\n")
+} else {
+  cat("A Relative Risk < 1 indicates a lower risk of abnormal birth outcomes for hypertensive mothers.\n")
+}
+
+# Step 6: Saving Results
+# Save detailed results to a text file for documentation
+if (!dir.exists("results")) dir.create("results")  # Create results directory if not exists
+sink("results/Analysis_Results.txt")
+
+cat("Chi-Square Test Results:\n")
+print(chi_square_result)
+if (chi_square_result$p.value < 0.05) {
+  cat("There is a significant association between Mother's Hypertension Status and Birth Status (p < 0.05).\n")
+} else {
+  cat("There is no significant association between Mother's Hypertension Status and Birth Status (p >= 0.05).\n")
+}
+
+cat("\nOdds Ratio Results:\n")
+print(odds_ratio_result$measure)
+if (odds_ratio_result$measure[2, "estimate"] > 1) {
+  cat("An Odds Ratio > 1 suggests that hypertensive mothers are more likely to have abnormal birth outcomes.\n")
+} else {
+  cat("An Odds Ratio < 1 suggests that hypertensive mothers are less likely to have abnormal birth outcomes.\n")
+}
+
+cat("\nRelative Risk Results:\n")
+print(relative_risk_result$measure)
+if (relative_risk_result$measure[2, "estimate"] > 1) {
+  cat("A Relative Risk > 1 indicates a higher risk of abnormal birth outcomes for hypertensive mothers.\n")
+} else {
+  cat("A Relative Risk < 1 indicates a lower risk of abnormal birth outcomes for hypertensive mothers.\n")
+}
+
+sink()  # Stop saving to file
+

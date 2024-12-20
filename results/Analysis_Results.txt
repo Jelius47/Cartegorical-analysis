@@ -1,0 +1,22 @@
+Chi-Square Test Results:
+
+	Pearson's Chi-squared test with Yates' continuity correction
+
+data:  chi_sq_table
+X-squared = 13.096, df = 1, p-value = 0.0002959
+
+There is a significant association between Mother's Hypertension Status and Birth Status (p < 0.05).
+
+Odds Ratio Results:
+                  odds ratio with 95% C.I.
+                    estimate    lower     upper
+  Hypertensive     1.0000000       NA        NA
+  Non Hypertensive 0.3195633 0.174906 0.5994358
+An Odds Ratio < 1 suggests that hypertensive mothers are less likely to have abnormal birth outcomes.
+
+Relative Risk Results:
+                  risk ratio with 95% C.I.
+                    estimate     lower    upper
+  Hypertensive     1.0000000        NA       NA
+  Non Hypertensive 0.3895721 0.2418788 0.627448
+A Relative Risk < 1 indicates a lower risk of abnormal birth outcomes for hypertensive mothers.
